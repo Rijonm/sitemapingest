@@ -59,7 +59,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 relative">
+          <a
+            href="https://github.com/Rijonm/sitemapingest"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute right-0 top-1 btn-brutal px-3 py-2 text-sm"
+          >
+            GitHub
+          </a>
           <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2">
             Sitemap<span className="text-accent">Ingest</span>
           </h1>

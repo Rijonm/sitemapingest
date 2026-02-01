@@ -1,39 +1,21 @@
 import { load } from "cheerio";
 import type { ScrapedPage } from "@/types";
 
+// Only strip elements that never contain meaningful text content
 const REMOVE_SELECTORS = [
   "script",
   "style",
   "noscript",
   "iframe",
   "svg",
-  "nav",
-  "footer",
-  "header",
-  "aside",
-  '[role="navigation"]',
-  '[role="banner"]',
-  '[role="contentinfo"]',
+  "link",
+  "meta",
   '[aria-hidden="true"]',
   ".cookie-banner",
   ".ad",
   ".advertisement",
-  ".sidebar",
-  ".nav",
-  ".menu",
   ".popup",
   ".modal",
-];
-
-const CONTENT_SELECTORS = [
-  "article",
-  "main",
-  '[role="main"]',
-  ".post-content",
-  ".entry-content",
-  ".article-content",
-  ".content",
-  "#content",
 ];
 
 export async function scrapePage(url: string): Promise<ScrapedPage> {
@@ -61,21 +43,11 @@ export async function scrapePage(url: string): Promise<ScrapedPage> {
     // Extract title
     const title = $("title").first().text().trim() || url;
 
-    // Remove non-content elements
+    // Remove only non-text elements (scripts, styles, hidden elements)
     $(REMOVE_SELECTORS.join(", ")).remove();
 
-    // Try content containers first, fall back to body
-    let contentSelector = "body";
-    for (const selector of CONTENT_SELECTORS) {
-      if ($(selector).length > 0) {
-        contentSelector = selector;
-        break;
-      }
-    }
-
-    // Extract text
-    const text = $(contentSelector)
-      .first()
+    // Extract all text from body
+    const text = $("body")
       .text()
       .replace(/[ \t]+/g, " ")
       .replace(/\n\s*\n/g, "\n\n")
